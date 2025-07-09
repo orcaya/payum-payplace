@@ -65,7 +65,8 @@ class ObtainCreditCardTokenAction extends BaseApiAwareAction implements LoggerAw
             'paymentmethod' => 'creditcard',
             'sessionid' => $model['clientSession'],
             'sslmerchant' => $this->getApi()->getOption('ssl_merchant_id'),
-            'transactiontype' => 'authorization',
+            'transactiontype' => 'preauthorization',
+            'payment_options' => '3dsecure20',
             'version' => '2.0',
             'tdsCustomerEmail' => $model['customer_email'],
             'tdsCustomerBillingAddress.city' => $model['city'],
@@ -78,7 +79,7 @@ class ObtainCreditCardTokenAction extends BaseApiAwareAction implements LoggerAw
             'tdsCustomerShippingAddress.line1' => $model['street'],
             'tdsCustomerShippingAddress.postCode' => $model['zip'],
             'tdsCustomerShippingAddress.state' => $model['state'],
-
+            'notifyurl' => $this->getApi()->getOption('notify_url'),
         ];
 
         $hmac = $this->getHmac($this->getApi()->getOption('ssl_password'), $formServiceParameters);
