@@ -61,7 +61,7 @@ class CaptureAction extends GatewayAwareAction implements GenericTokenFactoryAwa
             // Determine payment method and use appropriate token action
             $paymentMethod = $model['payment_method'] ?? 'creditcard';
             
-            if ($paymentMethod === 'elv') {
+            if ($paymentMethod === 'directdebit') {
                 $this->gateway->execute(new ObtainDirectDebitToken($model));
             } else {
                 $this->gateway->execute(new ObtainCreditCardToken($model));

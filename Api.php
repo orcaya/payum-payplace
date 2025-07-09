@@ -30,7 +30,7 @@ class Api implements LoggerAwareInterface
     // Payment Options
     public const PAYMENT_OPTIONS_INIT_IFRAME = 'init_iframe';
     public const PAYMENT_OPTIONS_CREDITCARD = 'creditcard';
-    public const PAYMENT_OPTIONS_ELV = 'elv';
+    public const PAYMENT_OPTIONS_DIRECTDEBIT = 'directdebit';
     public const PAYMENT_OPTIONS_GENERATE_PPAN = 'generate_ppan';
     public const PAYMENT_OPTIONS_3DSECURE20 = '3dsecure20';
 
@@ -93,24 +93,9 @@ class Api implements LoggerAwareInterface
         return true;
     }
 
-    /**
-     * Initialize iframe session for payment
-     *
-     * @param array $fields
-     * @return array
-     */
-    public function initializeIframe(array $fields): array
+    public function obtainDirectDebitToken(): bool
     {
-        $fields['version'] = '1.1';
-        $fields['command'] = self::COMMAND_OPEN;
-        
-        if (!isset($fields['payment_options'])) {
-            $fields['payment_options'] = self::PAYMENT_OPTIONS_INIT_IFRAME;
-        }
-
-        $this->logger->info('Initializing Payplace iframe', ['fields' => $this->sanitizeLogData($fields)]);
-
-        return $this->decodeResponse($this->doRequest($fields));
+        return true;
     }
 
     /**
@@ -123,9 +108,9 @@ class Api implements LoggerAwareInterface
     {
         $paymentMethod = $fields['payment_method'] ?? 'creditcard';
 
-        if ($paymentMethod === 'elv') {
+        if ($paymentMethod === 'directdebit') {
             $fields['command'] = self::COMMAND_PREAUTHORIZATION;
-            $fields['payment_options'] = self::PAYMENT_OPTIONS_ELV;
+            $fields['payment_options'] = self::DIRECTDEBIT;
         } else {
             $fields['command'] = self::COMMAND_PREAUTHORIZATION;
             $fields['payment_options'] = self::PAYMENT_OPTIONS_CREDITCARD;
@@ -150,8 +135,8 @@ class Api implements LoggerAwareInterface
         $paymentMethod = $fields['payment_method'] ?? 'creditcard';
 
         $fields['command'] = self::COMMAND_CAPTURE;
-        $fields['payment_options'] = ($paymentMethod === 'elv') 
-            ? self::PAYMENT_OPTIONS_ELV 
+        $fields['payment_options'] = ($paymentMethod === 'directdebit') 
+            ? self::PAYMENT_OPTIONS_DIRECTDEBIT
             : self::PAYMENT_OPTIONS_CREDITCARD;
 
         $this->logger->info('Capturing Payplace payment', [
@@ -173,8 +158,8 @@ class Api implements LoggerAwareInterface
         $paymentMethod = $fields['payment_method'] ?? 'creditcard';
 
         $fields['command'] = self::COMMAND_REVERSAL;
-        $fields['payment_options'] = ($paymentMethod === 'elv') 
-            ? self::PAYMENT_OPTIONS_ELV 
+        $fields['payment_options'] = ($paymentMethod === 'directdebit') 
+            ? self::PAYMENT_OPTIONS_DIRECTDEBIT 
             : self::PAYMENT_OPTIONS_CREDITCARD;
 
         $this->logger->info('Cancelling Payplace payment', [
@@ -196,8 +181,8 @@ class Api implements LoggerAwareInterface
         $paymentMethod = $fields['payment_method'] ?? 'creditcard';
 
         $fields['command'] = self::COMMAND_REFUND;
-        $fields['payment_options'] = ($paymentMethod === 'elv') 
-            ? self::PAYMENT_OPTIONS_ELV 
+        $fields['payment_options'] = ($paymentMethod === 'directdebit') 
+            ? self::PAYMENT_OPTIONS_DIRECTDEBIT 
             : self::PAYMENT_OPTIONS_CREDITCARD;
 
         $this->logger->info('Refunding Payplace payment', [

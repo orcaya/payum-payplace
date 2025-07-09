@@ -11,7 +11,7 @@ class ObtainDirectDebitToken extends Generic
     /**
      * @var string
      */
-    private $paymentMethod = 'elv';
+    private $paymentMethod = 'directdebit';
 
     /**
      * Get the payment method for this request

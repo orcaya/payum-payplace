@@ -46,8 +46,8 @@ class AuthorizeAction extends BaseApiAwareAction implements LoggerAwareInterface
             $fields['token'] = $model['token'];
         }
 
-        // For ELV payments, use PPAN
-        if ($model['payment_method'] === 'elv' && !empty($model['ppan'])) {
+        // For directdebit payments, use PPAN
+        if ($model['payment_method'] === 'directdebit' && !empty($model['ppan'])) {
             $fields['ppan'] = $model['ppan'];
         }
         
@@ -119,15 +119,15 @@ class AuthorizeAction extends BaseApiAwareAction implements LoggerAwareInterface
         // Payment method specific fields
         $paymentMethod = $response['payment_method'] ?? $model['payment_method'] ?? 'creditcard';
         
-        if ($paymentMethod === 'elv') {
-            $elvFields = [
+        if ($paymentMethod === 'directdebit') {
+            $directdebitFields = [
                 'ppan' => 'ppan',
                 'iban_masked' => 'iban_masked',
                 'bic' => 'bic',
                 'account_holder' => 'account_holder',
             ];
             
-            foreach ($elvFields as $responseKey => $modelKey) {
+            foreach ($directdebitFields as $responseKey => $modelKey) {
                 if (isset($response[$responseKey])) {
                     $model[$modelKey] = $response[$responseKey];
                 }

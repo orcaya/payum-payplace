@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Orcaya\Payum\Payplace\Action\Api;
 
-use Orcaya\Payum\Payplace\Request\Api\ObtainCreditCardToken;
+use Orcaya\Payum\Payplace\Request\Api\ObtainDirectDebitToken;
 use Payum\Core\Bridge\Spl\ArrayObject;
 use Payum\Core\Exception\RequestNotSupportedException;
 use Payum\Core\Reply\HttpResponse;
@@ -12,7 +12,7 @@ use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
-class ObtainCreditCardTokenAction extends BaseApiAwareAction implements LoggerAwareInterface
+class ObtainDirectDebitTokenAction extends BaseApiAwareAction implements LoggerAwareInterface
 {
     /**
      * @var LoggerInterface
@@ -26,7 +26,7 @@ class ObtainCreditCardTokenAction extends BaseApiAwareAction implements LoggerAw
     }
 
     /**
-     * @param ObtainCreditCardToken $request
+     * @param ObtainDirectDebitToken $request
      */
     public function execute($request): void
     {
@@ -43,7 +43,7 @@ class ObtainCreditCardTokenAction extends BaseApiAwareAction implements LoggerAw
 
     public function supports($request): bool
     {
-        return $request instanceof ObtainCreditCardToken && $request->getModel() instanceof \ArrayAccess;
+        return $request instanceof ObtainDirectDebitToken && $request->getModel() instanceof \ArrayAccess;
     }
 
     protected function getFormServiceUrl(): string
@@ -60,34 +60,27 @@ class ObtainCreditCardTokenAction extends BaseApiAwareAction implements LoggerAw
             'basketid' => $model['number'],
             'command' => 'sslform',
             'currency' => $model['currency'],
-            'customer_addr_city' => $model['city'],
-            'customer_addr_street' => $model['street'],
-            'customer_addr_zip' => $model['zip'],
             'date' => date('Ymd_H:i:s'),
-            'deliverycountry' => $model['country'],
-            'deliverycountryaction' => 'notify',
-            'locale' => 'de',
-            'mac' => $this->getApi()->getOption('ssl_password'),
             'orderid' => $model['orderid'],
-            'paymentmethod' => 'creditcard',
+            'paymentmethod' => 'directdebit',
             'sessionid' => $model['clientSession'],
             'sslmerchant' => $this->getApi()->getOption('ssl_merchant_id'),
             'transactiontype' => 'preauthorization',
-            'payment_options' => '3dsecure20;mobile',
+            'payment_options' => '3dsecure20',
             'version' => '2.0',
             'tdsCustomerEmail' => $model['customer_email'],
             'tdsCustomerBillingAddress.city' => $model['city'],
             'tdsCustomerBillingAddress.country' => $model['country'],
             'tdsCustomerBillingAddress.line1' => $model['street'],
             'tdsCustomerBillingAddress.postCode' => $model['zip'],
+            'tdsCustomerBillingAddress.state' => $model['state'],
             'tdsCustomerShippingAddress.city' => $model['city'],
             'tdsCustomerShippingAddress.country' => $model['country'],
             'tdsCustomerShippingAddress.line1' => $model['street'],
             'tdsCustomerShippingAddress.postCode' => $model['zip'],
+            'tdsCustomerShippingAddress.state' => $model['state'],
             'notifyurl' => $this->getApi()->getOption('notify_url'),
         ];
-
-        ksort($formServiceParameters);
 
         $hmac = $this->getHmac($this->getApi()->getOption('ssl_password'), $formServiceParameters);
         $formServiceParameters['hmac1'] = $hmac;

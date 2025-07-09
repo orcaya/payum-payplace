@@ -7,9 +7,9 @@ namespace Orcaya\Payum\Payplace;
 use Orcaya\Payum\Payplace\Action\Api\AuthorizeAction as ApiAuthorizeAction;
 use Orcaya\Payum\Payplace\Action\Api\CancelAction as ApiCancelAction;
 use Orcaya\Payum\Payplace\Action\Api\CaptureAction as ApiCaptureAction;
-use Orcaya\Payum\Payplace\Action\Api\InitializeIframeAction as ApiInitializeIframeAction;
 use Orcaya\Payum\Payplace\Action\Api\RefundAction as ApiRefundAction;
 use Orcaya\Payum\Payplace\Action\Api\ObtainCreditCardTokenAction as ApiObtainCreditCardTokenAction;
+use Orcaya\Payum\Payplace\Action\Api\ObtainDirectDebitTokenAction as ApiObtainDirectDebitTokenAction;
 use Orcaya\Payum\Payplace\Action\AuthorizeAction;
 use Orcaya\Payum\Payplace\Action\CancelAction;
 use Orcaya\Payum\Payplace\Action\CaptureAction;
@@ -37,22 +37,15 @@ class PayplaceGatewayFactory extends GatewayFactory
             'payum.action.status' => new StatusAction(),
             'payum.action.convert_payment' => new ConvertPaymentAction(),
             'payum.action.obtain_credit_card_token' => new ObtainCreditCardTokenAction(),
+            'payum.action.obtain_direct_debit_token' => new ObtainDirectDebitTokenAction(),
 
-            'payum.action.api.initialize_iframe' => new ApiInitializeIframeAction(),
             'payum.action.api.authorize' => new ApiAuthorizeAction(),
             'payum.action.api.capture' => new ApiCaptureAction(),
             'payum.action.api.refund' => new ApiRefundAction(),
             'payum.action.api.cancel' => new ApiCancelAction(),
             'payum.action.api.obtain_credit_card_token' => new ApiObtainCreditCardTokenAction(),
-
-            'payum.template.capture' => '@PayumPayplace/Action/capture.html.twig',
-            'payum.template.authorize' => '@PayumPayplace/Action/authorize.html.twig',
-            'payum.template.obtain_direct_debit_token' => '@PayumPayplace/Action/obtain_token_direct_debit.html.twig',
+            'payum.action.api.obtain_direct_debit_token' => new ApiObtainDirectDebitTokenAction(),
         ]);
-
-        $config['payum.action.obtain_direct_debit_token'] = function (ArrayObject $config) {
-            return new ObtainDirectDebitTokenAction($config['payum.template.obtain_direct_debit_token']);
-        };
 
         if (false == $config['payum.api']) {
             $config['payum.default_options'] = [
@@ -81,9 +74,5 @@ class PayplaceGatewayFactory extends GatewayFactory
                 return $api;
             };
         }
-
-        $config['payum.paths'] = array_replace([
-            'PayumPayplace' => __DIR__ . '/Resources/views',
-        ], $config['payum.paths'] ?: []);
     }
 } 

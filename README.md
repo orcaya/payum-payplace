@@ -5,7 +5,7 @@ Ein Payum-Gateway für die Integration des Payplace-Zahlungsanbieters mit Unters
 ## Features
 
 - ✅ **Kreditkartenzahlungen** mit 3D-Secure 2.0 Unterstützung
-- ✅ **SEPA-Lastschriftzahlungen** (ELV)
+- ✅ **SEPA-Lastschriftzahlungen** (DIRECTDEBIT)
 - ✅ **Sichere iframe-Integration** für PCI-Compliance
 - ✅ **Zwei-Phasen-Zahlungen**: Autorisierung + Buchung
 - ✅ **Stornierungen** und **Erstattungen**
@@ -71,7 +71,7 @@ Die `AuthorizeAction` und `CaptureAction` erkennen automatisch die Zahlungsart:
 // Automatische Erkennung basierend auf payment_method
 $paymentMethod = $model['payment_method'] ?? 'creditcard';
 
-if ($paymentMethod === 'elv') {
+if ($paymentMethod === 'directdebit') {
     $this->gateway->execute(new ObtainDirectDebitToken($model));
 } else {
     $this->gateway->execute(new ObtainCreditCardToken($model));
@@ -87,7 +87,7 @@ Die Gateway verwendet jetzt ausschließlich separate Templates für optimale Ben
 **Controller-Updates erforderlich:**
 ```php
 // Korrekte Implementierung - spezifizieren Sie die Zahlungsart
-if ($paymentMethod === 'elv') {
+if ($paymentMethod === 'directdebit') {
     $this->gateway->execute(new ObtainDirectDebitToken($model));
 } else {
     $this->gateway->execute(new ObtainCreditCardToken($model));
@@ -164,7 +164,7 @@ $paymentDetails = [
     'amount' => $order->getTotal(),
     'currency' => 'EUR',
     'customer_email' => $customer->getEmail(),
-    'payment_method' => 'creditcard', // oder 'elv'
+    'payment_method' => 'creditcard', // oder 'directdebit'
     'successurl' => $this->generateUrl('payment_success', [], UrlGeneratorInterface::ABSOLUTE_URL),
     'errorurl' => $this->generateUrl('payment_error', [], UrlGeneratorInterface::ABSOLUTE_URL),
     'backurl' => $this->generateUrl('payment_cancel', [], UrlGeneratorInterface::ABSOLUTE_URL),
@@ -195,7 +195,7 @@ $paymentDetails = [
     'amount' => 2500, // 25,00 EUR in Cent
     'currency' => 'EUR',
     'customer_email' => 'customer@example.com',
-    'payment_method' => 'creditcard', // oder 'elv' für SEPA
+    'payment_method' => 'creditcard', // oder 'directdebit' für SEPA
     'description' => 'Bestellung #123',
     
     // URLs für iframe-Integration
@@ -266,11 +266,11 @@ $paymentDetails = [
 - American Express
 - 3D-Secure 2.0
 
-### SEPA-Lastschrift (ELV)
+### SEPA-Lastschrift (directdebit)
 
 ```php
 $paymentDetails = [
-    'payment_method' => 'elv',
+    'payment_method' => 'directdebit',
     // ... weitere Details
 ];
 ```

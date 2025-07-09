@@ -7,11 +7,7 @@ namespace Orcaya\Payum\Payplace\Action;
 use Orcaya\Payum\Payplace\Request\ObtainCreditCardToken;
 use Payum\Core\Bridge\Spl\ArrayObject;
 use Payum\Core\Exception\RequestNotSupportedException;
-use Payum\Core\Reply\HttpResponse;
-use Payum\Core\Request\GetHttpRequest;
-use Payum\Core\Request\RenderTemplate;
 use Payum\Core\Action\GatewayAwareAction;
-use Orcaya\Payum\Payplace\Api;
 
 class ObtainCreditCardTokenAction extends GatewayAwareAction
 {
