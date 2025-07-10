@@ -36,7 +36,7 @@ class CaptureAction extends BaseApiAwareAction implements LoggerAwareInterface
 
         $fields = [
             'merchant_id' => $this->getApi()->getOption('merchant_id'),
-            'orderid' => $model['orderid'],
+            'orderid' => $model['number'],
             'trefnum' => $model['payplace_trefnum'] ?? $model['trefnum'],
             'payment_method' => $model['payment_method'] ?? 'creditcard',
         ];
@@ -47,7 +47,7 @@ class CaptureAction extends BaseApiAwareAction implements LoggerAwareInterface
         }
 
         $response = $this->getApi()->capture($fields);
-
+        
         // Handle error responses
         if (isset($response['posherr']) && $response['posherr'] != '0') {
             $model['status'] = 'failed';
@@ -65,9 +65,11 @@ class CaptureAction extends BaseApiAwareAction implements LoggerAwareInterface
         }
         
         // Handle successful responses
-        if (isset($response['rc']) && $response['rc'] == '000') {
+        if (isset($response['posherr']) && $response['posherr'] == '0') {
             $model['status'] = 'captured';
             $model['capture_status'] = 'captured';
+            $model['rc'] = $response['rc'] ?? '0';
+            $model['captured_at'] = date('Y-m-d H:i:s');
             
             $this->logger->info(sprintf(
                 'Payment %s captured successfully. Amount: %s',
@@ -75,9 +77,6 @@ class CaptureAction extends BaseApiAwareAction implements LoggerAwareInterface
                 $response['captured_amount'] ?? 'full'
             ));
         }
-
-        // Store capture response data
-        $this->mapCaptureResponseToModel($model, $response);
         
         $this->logger->info(sprintf(
             'Payment %s capture status changed from "%s" to "%s"',
@@ -85,24 +84,6 @@ class CaptureAction extends BaseApiAwareAction implements LoggerAwareInterface
             $previousStatus,
             $model['status']
         ));
-    }
-
-    protected function mapCaptureResponseToModel(ArrayObject $model, array $response): void
-    {
-        $captureFields = [
-            'status' => 'status',
-            'rmsg' => 'rmsg',
-            'posherr' => 'posherr',
-            'captured_amount' => 'captured_amount',
-        ];
-
-        foreach ($captureFields as $responseKey => $modelKey) {
-            if (isset($response[$responseKey])) {
-                $model[$modelKey] = $response[$responseKey];
-            }
-        }
-
-        $model['captured_at'] = date('Y-m-d H:i:s');
     }
 
     public function supports($request): bool

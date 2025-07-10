@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Orcaya\Payum\Payplace\Action;
 
-use Orcaya\Payum\Payplace\Request\Api\InitializeIframe;
 use Orcaya\Payum\Payplace\Request\ObtainCreditCardToken;
 use Orcaya\Payum\Payplace\Request\ObtainDirectDebitToken;
 use Payum\Core\Bridge\Spl\ArrayObject;
@@ -35,29 +34,15 @@ class CaptureAction extends GatewayAwareAction implements GenericTokenFactoryAwa
         $model['errorurl'] = $request->getToken()->getTargetUrl() . '?canceled=1';
         $model['backurl'] = $request->getToken()->getTargetUrl() . '?canceled=1';
 
-        $httpRequest = new GetHttpRequest();
-        $this->gateway->execute($httpRequest);
-
-        // Step 1: Check if we have a token from Payplace iframe
-        if (!empty($model['token'])) {
-            // Now authorize with the token
-            $this->gateway->execute(new \Orcaya\Payum\Payplace\Request\Api\Authorize($model));
-            
-            if (isset($model['trefnum'])) {
-                // Authorization successful, now capture
-                $this->gateway->execute(new \Orcaya\Payum\Payplace\Request\Api\Capture($model));
-                $model['captured'] = true;
-            }
+        if (
+            $model['posherr'] == Api::POSHERR_SUCCESS && 
+            isset($model['trefnum'])
+        ) {           
+            $this->gateway->execute(new \Orcaya\Payum\Payplace\Request\Api\Capture($model));
             return;
         }
 
-        // Step 2: If no iframe session exists, create one
-        if (false === isset($model['clientSession'])) {
-            $this->gateway->execute(new InitializeIframe($model));
-        }
-
-        // Step 3: Show iframe form to collect payment data
-        if (isset($model['clientSession']) && !isset($model['token'])) {
+        if (isset($model['clientSession']) && $model['status'] != 'authorized') {
             // Determine payment method and use appropriate token action
             $paymentMethod = $model['payment_method'] ?? 'creditcard';
             
