@@ -71,7 +71,7 @@ class ObtainCreditCardTokenAction extends BaseApiAwareAction implements LoggerAw
             'transactiontype' => 'preauthorization',
             'version' => '2.0',
             'locale' => 'de',
-            'payment_options' => '3dsecure20;mobile',
+            'payment_options' => '3dsecure20;mobile;generate_ppan',
             'tdsCustomerEmail' => $model['customer_email'],
             'tdsCustomerBillingAddress.city' => $model['city'],
             'tdsCustomerBillingAddress.country' => $model['country'],

@@ -31,9 +31,7 @@ class StatusAction extends GatewayAwareAction
             if (isset($model['status'])) {
                 switch ($model['status']) {
                     case 'captured':
-                        if (isset($model['captured']) && $model['captured'] == true) {
-                            $request->markCaptured();
-                        }
+                        $request->markCaptured();
                         break;
                     case 'authorized':
                         if (isset($model['trefnum'])) {

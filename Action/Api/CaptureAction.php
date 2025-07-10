@@ -39,7 +39,12 @@ class CaptureAction extends BaseApiAwareAction implements LoggerAwareInterface
             'orderid' => $model['number'],
             'trefnum' => $model['payplace_trefnum'] ?? $model['trefnum'],
             'payment_method' => $model['payment_method'] ?? 'creditcard',
+            'currency' => empty($model['currency']) ? 'EUR' : $model['currency'],
         ];
+
+        if (!empty($model['ppan'])) {
+            $fields['ppan'] = $model['ppan'];
+        }
 
         // Optional amount for partial captures
         if (!empty($model['capture_amount'])) {
@@ -52,6 +57,7 @@ class CaptureAction extends BaseApiAwareAction implements LoggerAwareInterface
         if (isset($response['posherr']) && $response['posherr'] != '0') {
             $model['status'] = 'failed';
             $model['posherr'] = $response['posherr'];
+            $model['rc'] = $response['rc'];
             $model['rmsg'] = $response['rmsg'] ?? 'Unknown error';
             
             $this->logger->error(sprintf(
@@ -68,8 +74,11 @@ class CaptureAction extends BaseApiAwareAction implements LoggerAwareInterface
         if (isset($response['posherr']) && $response['posherr'] == '0') {
             $model['status'] = 'captured';
             $model['capture_status'] = 'captured';
-            $model['rc'] = $response['rc'] ?? '0';
+            $model['rc'] = $response['rc'] ?? '000';
             $model['captured_at'] = date('Y-m-d H:i:s');
+            $model['captured'] = true;
+            $model['posherr'] = $response['posherr'];
+            $model['rmsg'] = $response['rmsg'];
             
             $this->logger->info(sprintf(
                 'Payment %s captured successfully. Amount: %s',

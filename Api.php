@@ -110,7 +110,7 @@ class Api implements LoggerAwareInterface
 
         if ($paymentMethod === 'directdebit') {
             $fields['command'] = self::COMMAND_PREAUTHORIZATION;
-            $fields['payment_options'] = self::DIRECTDEBIT;
+            $fields['payment_options'] = self::PAYMENT_OPTIONS_DIRECTDEBIT;
         } else {
             $fields['command'] = self::COMMAND_PREAUTHORIZATION;
             $fields['payment_options'] = self::PAYMENT_OPTIONS_CREDITCARD;

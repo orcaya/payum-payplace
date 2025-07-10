@@ -30,19 +30,10 @@ class RefundAction extends GatewayAwareAction
         }
 
         $this->gateway->execute(new \Orcaya\Payum\Payplace\Request\Api\Refund($model));
-        
-        if ($this->isSuccessfulRefund($model)) {
-            $model['refunded'] = true;
-        }
     }
 
     public function supports($request): bool
     {
         return $request instanceof Refund && $request->getModel() instanceof \ArrayAccess;
-    }
-
-    private function isSuccessfulRefund(ArrayObject $model): bool
-    {
-        return isset($model['posherr']) && $model['posherr'] === '0';
     }
 } 
