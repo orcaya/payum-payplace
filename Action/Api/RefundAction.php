@@ -21,7 +21,7 @@ class RefundAction extends BaseApiAwareAction
 
         $fields = [
             'merchant_id' => $this->getApi()->getOption('merchant_id'),
-            'orderid' => $model['orderid'],
+            'orderid' => $model['number'],
             'trefnum' => $model['trefnum'],
             'amount' => $model['refund_amount'] ?? $model['amount'],
             'payment_method' => $model['payment_method'] ?? 'creditcard',
@@ -41,10 +41,10 @@ class RefundAction extends BaseApiAwareAction
             $model['refunded'] = true;
             $model['status'] = 'refunded';
         } {
-
+            $model['posherr'] = $response['posherr'];
+            $model['rc'] = $response['rc'];
+            $model['rmsg'] = $response['rmsg'];
         }
-
-        
 
         $model->replace(array_merge($model->getArrayCopy(), $response));
     }
