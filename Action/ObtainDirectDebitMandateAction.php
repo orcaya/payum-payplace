@@ -13,6 +13,7 @@ use Payum\Core\Reply\HttpResponse;
 class ObtainDirectDebitMandateAction extends GatewayAwareAction
 {
     public const MANDATE_PLACEHOLDERS = [
+        '##owner##',
         '##firstname##',
         '##lastname##',
         '##street##',
@@ -21,7 +22,7 @@ class ObtainDirectDebitMandateAction extends GatewayAwareAction
         '##city##'        
     ];
 
-    public const MANDATE_TEXT = '<h3>SEPA-Lastschriftmandat</h3><br><p>Ich ermächtige den Zahlungsempfänger (<b>VfB Stuttgart 1893 AG</b>), 
+    public const MANDATE_TEXT = '<h3>SEPA-Lastschriftmandat</h3><br><p>Ich ermächtige den Zahlungsempfänger (<b>##owner##</b>), 
     Zahlungen von meinem Konto mittels Lastschrift einzuziehen.<br><br><b>Hinweis:</b>Ich kann innerhalb von acht Wochen, beginnend mit dem Belastungsdatum, 
     die Erstattung des belasteten Betrages verlangen.<br>Es gelten dabei die mit meinem Kreditinstitut vereinbarten Bedingungen.<br><br>
     <b>Zahlungspflichtiger</b><br><br>
@@ -43,6 +44,7 @@ class ObtainDirectDebitMandateAction extends GatewayAwareAction
             'mandate_text' => str_replace(
                     self::MANDATE_PLACEHOLDERS,
                     [
+                        $model['owner'],
                         $model['firstname'],
                         $model['lastname'],
                         $model['street'],
