@@ -6,6 +6,7 @@ namespace Orcaya\Payum\Payplace\Action;
 
 use Orcaya\Payum\Payplace\Request\ObtainCreditCardToken;
 use Orcaya\Payum\Payplace\Request\ObtainDirectDebitToken;
+use Orcaya\Payum\Payplace\Request\ObtainDirectDebitMandate;
 use Payum\Core\Bridge\Spl\ArrayObject;
 use Payum\Core\Exception\RequestNotSupportedException;
 use Payum\Core\Request\Authorize;
@@ -25,13 +26,14 @@ class AuthorizeAction extends GatewayAwareAction implements GenericTokenFactoryA
     public function execute($request): void
     {
         RequestNotSupportedException::assertSupports($this, $request);
-
+        
         $model = ArrayObject::ensureArrayObject($request->getModel());
+        $paymentMethod = $model['payment_method'] ?? 'creditcard';
         
         $model['successurl'] = $request->getToken()->getAfterUrl();
         $model['errorurl'] = $request->getToken()->getTargetUrl() . '?canceled=1';
         $model['backurl'] = $request->getToken()->getTargetUrl() . '?canceled=1';
-
+        
         $httpRequest = new GetHttpRequest();
         $this->gateway->execute($httpRequest);
         
@@ -41,19 +43,17 @@ class AuthorizeAction extends GatewayAwareAction implements GenericTokenFactoryA
             return;
         }
         
-        // Step 2: If no iframe session exists, create one
         $model['clientSession'] = $model['number'];
         
-        // Step 3: Show iframe form to collect payment data
-        if (isset($model['clientSession']) && !isset($model['token'])) {
-            // Determine payment method and use appropriate token action
-            $paymentMethod = $model['payment_method'] ?? 'creditcard';
-            
-            if ($paymentMethod === 'directdebit') {
+        if ($paymentMethod == 'directdebit') {
+            if(isset($model['mandate_accepted']) && $model['mandate_accepted'] == '1') {
                 $this->gateway->execute(new ObtainDirectDebitToken($model));
             } else {
-                $this->gateway->execute(new ObtainCreditCardToken($model));
+                $this->gateway->execute(new ObtainDirectDebitMandate($model));
             }
+            
+        } else {
+            $this->gateway->execute(new ObtainCreditCardToken($model));
         }
     }
 

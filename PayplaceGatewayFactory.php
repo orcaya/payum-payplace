@@ -17,6 +17,7 @@ use Orcaya\Payum\Payplace\Action\ConvertPaymentAction;
 use Orcaya\Payum\Payplace\Action\NotifyAction;
 use Orcaya\Payum\Payplace\Action\ObtainCreditCardTokenAction;
 use Orcaya\Payum\Payplace\Action\ObtainDirectDebitTokenAction;
+use Orcaya\Payum\Payplace\Action\ObtainDirectDebitMandateAction;
 use Orcaya\Payum\Payplace\Action\RefundAction;
 use Orcaya\Payum\Payplace\Action\StatusAction;
 use Payum\Core\Bridge\Spl\ArrayObject;
@@ -38,6 +39,7 @@ class PayplaceGatewayFactory extends GatewayFactory
             'payum.action.convert_payment' => new ConvertPaymentAction(),
             'payum.action.obtain_credit_card_token' => new ObtainCreditCardTokenAction(),
             'payum.action.obtain_direct_debit_token' => new ObtainDirectDebitTokenAction(),
+            'payum.action.obtain_direct_debit_mandate' => new ObtainDirectDebitMandateAction(),
 
             'payum.action.api.authorize' => new ApiAuthorizeAction(),
             'payum.action.api.capture' => new ApiCaptureAction(),
