@@ -1,37 +1,37 @@
 # Payum Payplace Gateway
 
-Ein professionelles Payum-Gateway für die Integration des Payplace-Zahlungsanbieters mit umfassender Unterstützung für Kreditkarten- und SEPA-Lastschriftzahlungen über den sicheren Payplace Formularservice.
+A professional Payum gateway for integrating the Payplace payment provider with comprehensive support for credit card and SEPA direct debit payments via the secure Payplace form service.
 
-**Entwickelt von:** [ORCAYA GmbH, Stuttgart](https://www.orcaya.com/)  
-**Lizenz:** MIT License  
+**Developed by:** [ORCAYA GmbH, Stuttgart](https://www.orcaya.com/)  
+**License:** MIT License  
 **Version:** 1.0+
 
 ---
 
-## 🚀 Features
+## �� Features
 
-- ✅ **Kreditkartenzahlungen** mit 3D-Secure 2.0 Unterstützung
-- ✅ **SEPA-Lastschriftzahlungen** mit automatischem Mandatsmanagement
-- ✅ **Payplace Formularservice** für maximale PCI-Compliance
-- ✅ **Sichere Weiterleitung** zum Payplace-Zahlungsformular
-- ✅ **Zwei-Phasen-Zahlungen**: Autorisierung + Capture
-- ✅ **Stornierungen** und **Erstattungen**
-- ✅ **Sandbox- und Produktivmodus**
-- ✅ **Token-basierte Sicherheit** (kein Speichern sensibler Daten)
-- ✅ **Event-basierte Webhooks** für Echtzeit-Benachrichtigungen
-- ✅ **PSR-3 Logging** für umfassendes Monitoring
-- ✅ **Vollständige Payum-Integration** mit allen Standard-Actions
-- ✅ **HMAC-Signierung** aller Anfragen für maximale Sicherheit
+- ✅ **Credit card payments** with 3D-Secure 2.0 support
+- ✅ **SEPA direct debit payments** with automatic mandate management
+- ✅ **Payplace form service** for maximum PCI compliance
+- ✅ **Secure redirect** to Payplace payment form
+- ✅ **Two-phase payments**: Authorization + Capture
+- ✅ **Cancellations** and **refunds**
+- ✅ **Sandbox and production mode**
+- ✅ **Token-based security** (no storing of sensitive data)
+- ✅ **Event-based webhooks** for real-time notifications
+- ✅ **PSR-3 logging** for comprehensive monitoring
+- ✅ **Full Payum integration** with all standard actions
+- ✅ **HMAC signing** of all requests for maximum security
 
 ## 📦 Installation
 
-### 1. Paket installieren
+### 1. Install package
 
 ```bash
 composer require orcaya/payum-payplace
 ```
 
-### 2. Gateway registrieren
+### 2. Register gateway
 
 ```yaml
 # config/packages/payum.yaml
@@ -48,7 +48,7 @@ payum:
             use_3dsecure: true
 ```
 
-### 3. Umgebungsvariablen
+### 3. Environment variables
 
 ```bash
 # .env
@@ -60,36 +60,36 @@ PAYPLACE_SANDBOX=true
 PAYPLACE_NOTIFY_URL=https://your-domain.com/payment/notify
 ```
 
-## 🔧 Konfigurationsoptionen
+## 🔧 Configuration Options
 
-| Option | Typ | Standard | Beschreibung |
-|--------|-----|----------|--------------|
-| `merchant_id` | string | *erforderlich* | Ihre Payplace Merchant ID |
-| `password` | string | *erforderlich* | Ihr Payplace API-Passwort |
-| `ssl_merchant_id` | string | *erforderlich* | SSL Merchant ID für Formularservice |
-| `ssl_password` | string | *erforderlich* | SSL-Passwort für HMAC-Signierung |
-| `notify_url` | string | *erforderlich* | Webhook-URL für Benachrichtigungen |
-| `sandbox` | boolean | `true` | Testsystem verwenden |
-| `use_3dsecure` | boolean | `true` | 3D-Secure für Kreditkarten aktivieren |
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `merchant_id` | string | *required* | Your Payplace Merchant ID |
+| `password` | string | *required* | Your Payplace API password |
+| `ssl_merchant_id` | string | *required* | SSL Merchant ID for form service |
+| `ssl_password` | string | *required* | SSL password for HMAC signing |
+| `notify_url` | string | *required* | Webhook URL for notifications |
+| `sandbox` | boolean | `true` | Use test system |
+| `use_3dsecure` | boolean | `true` | Enable 3D-Secure for credit cards |
 
-## 💳 Unterstützte Zahlungsmethoden
+## 💳 Supported Payment Methods
 
-### Kreditkarten
+### Credit Cards
 - **Visa** (3D-Secure 2.0)
 - **Mastercard** (3D-Secure 2.0)
 - **American Express**
 - **Diners Club**
 - **JCB**
 
-### SEPA-Lastschrift
-- **Einmalzahlung** mit automatischem Mandat
-- **IBAN-Validierung**
-- **BIC-Erkennung**
-- **Mandatsreferenz-Generierung**
+### SEPA Direct Debit
+- **One-time payment** with automatic mandate
+- **IBAN validation**
+- **BIC detection**
+- **Mandate reference generation**
 
-## 🚀 Verwendung
+## 🚀 Usage
 
-### Basis-Zahlungsworkflow
+### Basic Payment Workflow
 
 ```php
 <?php
@@ -97,136 +97,136 @@ PAYPLACE_NOTIFY_URL=https://your-domain.com/payment/notify
 use Payum\Core\Payum;
 use Payum\Core\Request\Capture;
 
-// Payum-Service abrufen
+// Get Payum service
 /** @var Payum $payum */
 $payum = $this->get('payum');
 $gateway = $payum->getGateway('payplace');
 
-// Zahlungsdetails definieren
+// Define payment details
 $paymentDetails = [
     'orderid' => 'ORDER_123',
-    'amount' => 2500, // 25,00 EUR in Cent
+    'amount' => 2500, // 25.00 EUR in cents
     'currency' => 'EUR',
-    'payment_method' => 'creditcard', // oder 'directdebit'
+    'payment_method' => 'creditcard', // or 'directdebit'
     'customer_email' => 'customer@example.com',
-    'description' => 'Bestellung #123',
+    'description' => 'Order #123',
     
-    // Callback-URLs für Formularservice
+    // Callback URLs for form service
     'successurl' => 'https://shop.example.com/payment/success',
     'errorurl' => 'https://shop.example.com/payment/error',
     'backurl' => 'https://shop.example.com/payment/cancel',
     'notificationurl' => 'https://shop.example.com/payment/notify',
 ];
 
-// Zahlung reservieren (leitet zum Payplace Formularservice weiter)
+// Reserve payment (redirects to Payplace form service)
 $gateway->execute(new Authorize($paymentDetails));
 
-// Führt die Buchung nach erfolgreicher Authorisierung durch
+// Execute booking after successful authorization
 $gateway->execute(new Capture($paymentDetails));
 ```
 
-### Kreditkartenzahlung
+### Credit Card Payment
 
 ```php
 $paymentDetails = [
     'payment_method' => 'creditcard',
     'orderid' => 'ORDER_123',
-    'amount' => 2500, // 25,00 EUR
+    'amount' => 2500, // 25.00 EUR
     'currency' => 'EUR',
     'customer_email' => 'customer@example.com',
     'city' => 'Stuttgart',
     'country' => 'DE',
-    'street' => 'Musterstraße 1',
+    'street' => 'Example Street 1',
     'zip' => '70173',
     // URLs...
 ];
 
-// Zahlung reservieren (leitet zum Payplace Formularservice weiter)
+// Reserve payment (redirects to Payplace form service)
 $gateway->execute(new Authorize($paymentDetails));
 
-// Führt die Buchung nach erfolgreicher Authorisierung durch
+// Execute booking after successful authorization
 $gateway->execute(new Capture($paymentDetails));
 ```
 
-### SEPA-Lastschrift mit automatischem Mandat
+### SEPA Direct Debit with Automatic Mandate
 
 ```php
 $paymentDetails = [
     'payment_method' => 'directdebit',
     'orderid' => 'ORDER_456',
-    'amount' => 5000, // 50,00 EUR
+    'amount' => 5000, // 50.00 EUR
     'currency' => 'EUR',
     'customer_email' => 'customer@example.com',
     // URLs...
 ];
 
-// Erstellt automatisch SEPA-Mandat
+// Automatically creates SEPA mandate
 $gateway->execute(new Authorize($paymentDetails));
 
-// Führt nach Bestätigung des Mandats die Reservierung durch
+// Execute reservation after mandate confirmation
 $gateway->execute(new Authorize($paymentDetails));
 
-// Führt die Buchung nach erfolgreicher Authorisierung durch
+// Execute booking after successful authorization
 $gateway->execute(new Capture($paymentDetails));
 ```
 
-### Zwei-Phasen-Zahlung (Autorisierung + Capture)
+### Two-Phase Payment (Authorization + Capture)
 
 ```php
 use Payum\Core\Request\Authorize;
 use Payum\Core\Request\Capture;
 use Payum\Core\Request\GetStatus;
 
-// 1. Schritt: Nur autorisieren
+// Step 1: Authorize only
 $gateway->execute(new Authorize($paymentDetails));
 
-// Status prüfen
+// Check status
 $gateway->execute($status = new GetStatus($paymentDetails));
 
 if ($status->isAuthorized()) {
-    // 2. Schritt: Geld einziehen
+    // Step 2: Capture funds
     $gateway->execute(new Capture($paymentDetails));
 }
 ```
 
-## 🛡️ Sicherheit & Formularservice
+## 🛡️ Security & Form Service
 
 ### Workflow
 
-1. **Initialisierung**: Gateway erstellt sichere Payplace-Session
-2. **Weiterleitung**: Kunde wird zum Payplace Formularservice weitergeleitet
-3. **Dateneingabe**: Kunde gibt Zahlungsdaten auf der sicheren Payplace-Seite ein
-4. **Token-Generierung**: Payplace erstellt verschlüsselten Token
-5. **Rückleitung**: Kunde wird zurück zu Ihrer Website geleitet
-6. **Autorisierung**: Zahlung wird mit Token autorisiert
-7. **Capture**: Bei Bedarf wird Zahlung eingezogen
+1. **Initialization**: Gateway creates secure Payplace session
+2. **Redirect**: Customer is redirected to Payplace form service
+3. **Data entry**: Customer enters payment data on secure Payplace page
+4. **Token generation**: Payplace creates encrypted token
+5. **Return**: Customer is redirected back to your website
+6. **Authorization**: Payment is authorized with token
+7. **Capture**: Payment is captured if needed
 
-### Formularservice-URLs
+### Form Service URLs
 
-Das Gateway leitet automatisch zu den Payplace Formularservice-URLs weiter:
+The gateway automatically redirects to Payplace form service URLs:
 
 - **Sandbox**: `https://testsystem.payplace.de/web-api/SSLPayment.po`
-- **Produktiv**: `https://system.payplace.de/web-api/SSLPayment.po`
+- **Production**: `https://system.payplace.de/web-api/SSLPayment.po`
 
-### Sicherheitsfeatures
+### Security Features
 
-- ✅ **PCI-DSS Level 1**: Zahlungsdaten verlassen nie Ihr System
-- ✅ **SSL/TLS**: Alle Übertragungen end-to-end verschlüsselt
-- ✅ **Token-basiert**: Keine Speicherung sensibler Kartendaten
-- ✅ **3D-Secure 2.0**: Starke Kundenauthentifizierung
-- ✅ **HMAC-SHA256**: Alle Anfragen kryptographisch signiert
-- ✅ **Domain-Validierung**: Callbacks nur für registrierte Domains
+- ✅ **PCI-DSS Level 1**: Payment data never leaves your system
+- ✅ **SSL/TLS**: All transmissions end-to-end encrypted
+- ✅ **Token-based**: No storage of sensitive card data
+- ✅ **3D-Secure 2.0**: Strong customer authentication
+- ✅ **HMAC-SHA256**: All requests cryptographically signed
+- ✅ **Domain validation**: Callbacks only for registered domains
 
-### HMAC-Signierung
+### HMAC Signing
 
-Alle Anfragen an den Formularservice werden automatisch mit HMAC-SHA256 signiert:
+All requests to the form service are automatically signed with HMAC-SHA256:
 
 ```php
-// Automatische HMAC-Generierung für alle Parameter
+// Automatic HMAC generation for all parameters
 $hmac = hash_hmac('sha256', http_build_query($parameters), $ssl_password);
 ```
 
-## 📊 Status-Management
+## 📊 Status Management
 
 ```php
 use Payum\Core\Request\GetStatus;
@@ -234,24 +234,24 @@ use Payum\Core\Request\GetStatus;
 $gateway->execute($status = new GetStatus($paymentDetails));
 
 if ($status->isCaptured()) {
-    echo "Zahlung erfolgreich!";
+    echo "Payment successful!";
 } elseif ($status->isAuthorized()) {
-    echo "Zahlung autorisiert";
+    echo "Payment authorized";
 } elseif ($status->isCanceled()) {
-    echo "Zahlung storniert";
+    echo "Payment canceled";
 } elseif ($status->isRefunded()) {
-    echo "Zahlung erstattet";
+    echo "Payment refunded";
 } elseif ($status->isFailed()) {
-    $errorMessage = $paymentDetails['rmsg'] ?? 'Unbekannter Fehler';
-    echo "Fehler: " . $errorMessage;
+    $errorMessage = $paymentDetails['rmsg'] ?? 'Unknown error';
+    echo "Error: " . $errorMessage;
 } elseif ($status->isPending()) {
-    echo "Zahlung wird verarbeitet";
+    echo "Payment is being processed";
 }
 ```
 
-## 🔔 Webhook-Integration
+## 🔔 Webhook Integration
 
-Payplace sendet automatische Benachrichtigungen an Ihre `notify_url`:
+Payplace sends automatic notifications to your `notify_url`:
 
 ```php
 // PaymentController.php
@@ -261,22 +261,22 @@ public function notifyAction(Request $request)
 {
     $gateway = $this->get('payum')->getGateway('payplace');
     
-    // Token aus URL extrahieren
+    // Extract token from URL
     $token = $this->get('payum.security.http_request_verifier')
         ->verify($request);
     
-    // Zahlung laden
+    // Load payment
     $payment = $this->get('payum')->getStorage(Payment::class)
         ->find($token->getDetails());
     
-    // Benachrichtigung verarbeiten
+    // Process notification
     $gateway->execute(new Notify($payment->getDetails()));
     
-    // Status aktualisieren
+    // Update status
     $gateway->execute($status = new GetStatus($payment->getDetails()));
     
     if ($status->isCaptured()) {
-        // Zahlung bestätigt - Bestellung abschließen
+        // Payment confirmed - complete order
         $this->processSuccessfulPayment($payment);
     }
     
@@ -286,7 +286,7 @@ public function notifyAction(Request $request)
 
 ## 🔍 Logging & Debugging
 
-Das Gateway unterstützt PSR-3 Logging für umfassendes Monitoring:
+The gateway supports PSR-3 logging for comprehensive monitoring:
 
 ```yaml
 # config/packages/monolog.yaml
@@ -300,21 +300,21 @@ monolog:
             channels: ['payplace']
 ```
 
-## ⚠️ Fehlerbehandlung
+## ⚠️ Error Handling
 
-### Häufige Fehlercodes
+### Common Error Codes
 
-| Code | Beschreibung | Lösung |
-|------|--------------|--------|
-| `001` | Ungültige Merchant ID | Konfiguration prüfen |
-| `002` | Ungültiges Passwort | Zugangsdaten überprüfen |
-| `101` | Ungültiger Betrag | Betrag muss > 0 sein |
-| `201` | Karte abgelehnt | Kunde über Ablehnung informieren |
-| `301` | 3D-Secure fehlgeschlagen | Erneuten Versuch anbieten |
-| `401` | IBAN ungültig | IBAN-Format prüfen |
-| `501` | Mandat abgelehnt | SEPA-Berechtigung prüfen |
+| Code | Description | Solution |
+|------|-------------|----------|
+| `001` | Invalid Merchant ID | Check configuration |
+| `002` | Invalid password | Verify credentials |
+| `101` | Invalid amount | Amount must be > 0 |
+| `201` | Card declined | Inform customer about decline |
+| `301` | 3D-Secure failed | Offer retry |
+| `401` | Invalid IBAN | Check IBAN format |
+| `501` | Mandate declined | Check SEPA authorization |
 
-### Fehlerbehandlung im Code
+### Error Handling in Code
 
 ```php
 use Orcaya\Payum\Payplace\Api;
@@ -323,9 +323,9 @@ $gateway->execute($status = new GetStatus($paymentDetails));
 
 if ($status->isFailed()) {
     $errorCode = $paymentDetails[Api::FIELD_POSHERR] ?? 'unknown';
-    $errorMessage = $paymentDetails[Api::FIELD_RMSG] ?? 'Unbekannter Fehler';
+    $errorMessage = $paymentDetails[Api::FIELD_RMSG] ?? 'Unknown error';
     
-    // Strukturiertes Logging
+    // Structured logging
     $this->logger->error('Payplace payment failed', [
         'order_id' => $paymentDetails['orderid'],
         'error_code' => $errorCode,
@@ -337,61 +337,61 @@ if ($status->isFailed()) {
 
 ## 🧪 Testing
 
-### Sandbox-Modus
+### Sandbox Mode
 
 ```yaml
-# Für Tests immer Sandbox verwenden
+# Always use sandbox for testing
 payum:
     gateways:
         payplace:
             sandbox: true
 ```
 
-### Test-Kreditkarten
+### Test Credit Cards
 
-| Karte | Nummer | Ergebnis |
-|-------|--------|----------|
-| Visa | `4111111111111111` | Erfolgreich |
-| Mastercard | `5555555555554444` | Erfolgreich |
-| Visa | `4000000000000002` | Abgelehnt |
+| Card | Number | Result |
+|------|--------|--------|
+| Visa | `4111111111111111` | Successful |
+| Mastercard | `5555555555554444` | Successful |
+| Visa | `4000000000000002` | Declined |
 
-### Test-IBAN
+### Test IBAN
 
-| IBAN | Ergebnis |
-|------|----------|
-| `DE89370400440532013000` | Erfolgreich |
-| `DE12500105170648489890` | Erfolgreich |
-| `DE87123456781234567890` | Abgelehnt |
+| IBAN | Result |
+|------|--------|
+| `DE89370400440532013000` | Successful |
+| `DE12500105170648489890` | Successful |
+| `DE87123456781234567890` | Declined |
 
-## 🏗️ Architektur
+## 🏗️ Architecture
 
-### Action-Klassen
+### Action Classes
 
-Das Gateway implementiert folgende Payum-Actions:
+The gateway implements the following Payum actions:
 
-| Action | Beschreibung |
-|--------|--------------|
-| `AuthorizeAction` | Autorisiert Zahlungen |
-| `CaptureAction` | Zieht autorisierte Beträge ein |
-| `CancelAction` | Storniert Autorisierungen |
-| `RefundAction` | Erstattung von Zahlungen |
-| `StatusAction` | Ermittelt Zahlungsstatus |
-| `NotifyAction` | Verarbeitet Webhooks |
-| `ObtainCreditCardTokenAction` | Weiterleitung zum Kreditkarten-Formular |
-| `ObtainDirectDebitTokenAction` | Weiterleitung zum SEPA-Formular |
-| `ConvertPaymentAction` | Payum-Integration |
+| Action | Description |
+|--------|-------------|
+| `AuthorizeAction` | Authorizes payments |
+| `CaptureAction` | Captures authorized amounts |
+| `CancelAction` | Cancels authorizations |
+| `RefundAction` | Refunds payments |
+| `StatusAction` | Determines payment status |
+| `NotifyAction` | Processes webhooks |
+| `ObtainCreditCardTokenAction` | Redirect to credit card form |
+| `ObtainDirectDebitTokenAction` | Redirect to SEPA form |
+| `ConvertPaymentAction` | Payum integration |
 
-### Request-Klassen
+### Request Classes
 
-| Request | Zweck |
-|---------|-------|
-| `ObtainCreditCardToken` | Kreditkarten-Token-Anfrage |
-| `ObtainDirectDebitToken` | SEPA-Token-Anfrage |
-| `ObtainDirectDebitMandate` | SEPA-Mandat-Anfrage |
+| Request | Purpose |
+|---------|---------|
+| `ObtainCreditCardToken` | Credit card token request |
+| `ObtainDirectDebitToken` | SEPA token request |
+| `ObtainDirectDebitMandate` | SEPA mandate request |
 
-### Formularservice-Parameter
+### Form Service Parameters
 
-#### Kreditkarten
+#### Credit Cards
 
 ```php
 $formServiceParameters = [
@@ -406,11 +406,11 @@ $formServiceParameters = [
     'version' => '2.0',
     'locale' => 'de',
     'hmac1' => 'generated_hmac_hash',
-    // weitere Parameter...
+    // additional parameters...
 ];
 ```
 
-#### SEPA-Lastschrift
+#### SEPA Direct Debit
 
 ```php
 $formServiceParameters = [
@@ -426,27 +426,27 @@ $formServiceParameters = [
     'version' => '2.0',
     'locale' => 'de',
     'hmac1' => 'generated_hmac_hash',
-    // weitere Parameter...
+    // additional parameters...
 ];
 ```
 
-## 🔗 Weiterführende Links
+## 🔗 Further Links
 
-- **[Payplace Dokumentation](https://docs.payplace.de/)**
+- **[Payplace Documentation](https://docs.payplace.de/)**
 - **[Payum Framework](https://github.com/Payum/Payum)**
 - **[ORCAYA GmbH](https://www.orcaya.com/)**
 
 ## 📞 Support
 
-Bei Fragen oder Problemen:
+For questions or issues:
 
-- **E-Mail:** [infocom](mailto:info@orcaya.com)
+- **Email:** [info@orcaya.com](mailto:info@orcaya.com)
 - **Website:** [www.orcaya.com](https://www.orcaya.com/)
 - **Issues:** [GitHub Issues](https://github.com/orcaya/payum-payplace/issues)
 
-## 📄 Lizenz
+## 📄 License
 
-Dieses Projekt steht unter der **MIT-Lizenz**.
+This project is licensed under the **MIT License**.
 
 ```
 MIT License
@@ -474,4 +474,4 @@ SOFTWARE.
 
 ---
 
-**Entwickelt mit ❤️ von [ORCAYA GmbH](https://www.orcaya.comx/), Stuttgart**
+**Developed with ❤️ by [ORCAYA GmbH](https://www.orcaya.com/), Stuttgart**
