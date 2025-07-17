@@ -40,13 +40,11 @@ class RefundAction extends BaseApiAwareAction
             $model['rmsg'] = $response['rmsg'];
             $model['refunded'] = true;
             $model['status'] = 'refunded';
-        } {
+        } else {
             $model['posherr'] = $response['posherr'];
             $model['rc'] = $response['rc'];
             $model['rmsg'] = $response['rmsg'];
         }
-
-        $model->replace(array_merge($model->getArrayCopy(), $response));
     }
 
     public function supports($request): bool
